@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+/* Global CSS Variables for Calendar Theme */
+:root {
+  --calendar-bg: #ffffff;
+  --calendar-border: #e5e7eb;
+  --calendar-text: #1f2937;
+  --calendar-text-muted: #6b7280;
+  --calendar-hover: #f3f4f6;
+  --calendar-selected: #2563eb;
+  --calendar-today: #3b82f6;
+  --calendar-disabled: #d1d5db;
+  --calendar-weekend: #f9fafb;
+  --calendar-event-dot: #10b981;
+}
+
+/* Dark mode support (optional for future enhancement) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --calendar-bg: #1f2937;
+    --calendar-border: #374151;
+    --calendar-text: #f9fafb;
+    --calendar-text-muted: #9ca3af;
+    --calendar-hover: #374151;
+    --calendar-selected: #3b82f6;
+    --calendar-today: #60a5fa;
+    --calendar-disabled: #4b5563;
+    --calendar-weekend: #111827;
+    --calendar-event-dot: #34d399;
+  }
+}
+
+/* Custom utility classes for Calendar */
+.calendar-container {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 1px;
+  background-color: #e5e7eb;
+}
+
+.calendar-cell {
+  background-color: white;
+  padding: 0.5rem;
+  min-height: 80px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.calendar-cell:hover {
+  background-color: #f9fafb;
+}
+
+.calendar-cell-today {
+  background-color: #eff6ff;
+  border: 2px solid #3b82f6;
+}
+
+.calendar-cell-selected {
+  background-color: #dbeafe;
+  border: 2px solid #2563eb;
+}
+
+.calendar-cell-disabled {
+  background-color: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.calendar-cell-disabled:hover {
+  background-color: #f9fafb;
+}
+
+.calendar-day-label {
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  padding: 0.5rem 0;
+  background-color: #f3f4f6;
+}
+
+.event-badge {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: #10b981;
+  margin-right: 0.25rem;
+}
+
+/* Base styles */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
