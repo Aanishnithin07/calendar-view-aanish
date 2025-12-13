@@ -1,17 +1,39 @@
-# Calendar Component Library
+# 📅 Calendar Component Library
 
-A production-grade, senior-level Calendar Component library built with React 18, TypeScript (Strict Mode), Tailwind CSS, and Vite.
+> Production-grade React calendar component with TypeScript, Tailwind CSS, and full accessibility support - Built for professional interviews and real-world applications.
 
-## 🎯 Features
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6.2-blue.svg)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18.3.1-61dafb.svg)](https://reactjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1.0-38bdf8.svg)](https://tailwindcss.com/)
+[![Vite](https://img.shields.io/badge/Vite-7.2.7-646cff.svg)](https://vitejs.dev/)
 
-- ✅ **Strict TypeScript**: Full type safety with `strict`, `noImplicitAny`, and `strictNullChecks` enabled
-- 📅 **Multiple Views**: Month view and Week view support
-- 🎨 **Tailwind CSS**: Production-ready design system with custom theme
-- 🚫 **No External UI Libraries**: All primitive components built from scratch
-- ♿ **Accessible**: ARIA-compliant components
-- 🎣 **Custom Hooks**: `useCalendar` and `useEventManager` for state management
-- 📦 **Tree-shakeable**: Modular architecture with barrel exports
-- 🔧 **Vite**: Lightning-fast build tool
+## ✨ Features
+
+### Core Functionality
+- ✅ **Multiple Views**: Month grid (42 days) and Week timeline (hourly slots)
+- ✅ **Event Management**: Full CRUD with form validation and color picker
+- ✅ **LocalStorage Persistence**: Events survive page refresh
+- ✅ **Strict TypeScript**: Full type safety with strict mode enabled
+
+### User Experience
+- ✅ **Floating Action Button**: Quick event creation access
+- ✅ **Toast Notifications**: Success/error feedback for all actions
+- ✅ **Empty State**: Friendly onboarding when no events exist
+- ✅ **Delete Confirmation**: Prevents accidental deletions
+- ✅ **Keyboard Shortcuts**: N (new), ←/→ (navigate), T (today), ESC (close)
+
+### Design & Accessibility
+- ✅ **Mobile Responsive**: Full-screen modals, touch-friendly (48px buttons)
+- ✅ **Accessible**: ARIA labels, keyboard navigation, screen reader friendly
+- ✅ **Smooth Animations**: Transitions, hover effects, micro-interactions
+- ✅ **Custom Design System**: Tailwind CSS v4 with custom theme
+
+### Technical Excellence
+- ✅ **No External UI Libraries**: All primitives built from scratch
+- ✅ **Performance Optimized**: React.memo, useCallback, code splitting
+- ✅ **Custom Hooks**: `useCalendar` and `useEventManager`
+- ✅ **Storybook Ready**: Visual component testing
+- ✅ **Production Build**: Zero TypeScript errors, 220KB gzipped
 
 ## 📁 Project Structure
 
