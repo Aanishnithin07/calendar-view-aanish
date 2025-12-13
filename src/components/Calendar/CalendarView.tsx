@@ -183,10 +183,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           <WeekView
             currentDate={currentDate}
             events={events}
-            selectedDates={selectedDates}
-            onDateSelect={handleDateSelect}
             onEventClick={onEventClick}
-            config={mergedConfig}
           />
         )}
       </div>
