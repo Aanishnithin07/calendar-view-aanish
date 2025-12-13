@@ -1,41 +1,15 @@
 /**
  * App Component
  * Demo application showcasing the Calendar Component Library
- * Phase 6 Prompt 10: Uses useEventManager hook with localStorage persistence
+ * Phase 6 Prompt 13: Integrated with CalendarView and useEventManager
  */
 
 import { CalendarView } from '@/components/Calendar';
 import { useEventManager } from '@/hooks/useEventManager';
-import type { CalendarEvent } from '@/types/calendar.types';
 
 function App() {
   // Phase 6 Prompt 10: Use useEventManager hook for event state with localStorage
   const { events, addEvent, updateEvent, deleteEvent } = useEventManager();
-
-  // Event handlers
-  const handleDateSelect = (date: Date): void => {
-    console.log('Date selected:', date);
-  };
-
-  const handleEventClick = (event: CalendarEvent): void => {
-    console.log('Event clicked:', event);
-  };
-
-  // Phase 6 Prompt 10: Use the CRUD methods from useEventManager
-  const handleEventAdd = (event: Omit<CalendarEvent, 'id'>): void => {
-    const id = addEvent(event);
-    console.log('Event added with ID:', id);
-  };
-
-  const handleEventUpdate = (id: string, updates: Partial<CalendarEvent>): void => {
-    updateEvent(id, updates);
-    console.log('Event updated:', id, updates);
-  };
-
-  const handleEventDelete = (id: string): void => {
-    deleteEvent(id);
-    console.log('Event deleted:', id);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -51,19 +25,10 @@ function App() {
 
         <main>
           <CalendarView
-            initialDate={new Date()}
             events={events}
-            onEventAdd={handleEventAdd}
-            onEventUpdate={handleEventUpdate}
-            onEventDelete={handleEventDelete}
-            onDateSelect={handleDateSelect}
-            onEventClick={handleEventClick}
-            config={{
-              locale: 'en-US',
-              firstDayOfWeek: 0,
-              highlightToday: true,
-              allowMultipleSelection: false,
-            }}
+            onEventAdd={addEvent}
+            onEventUpdate={updateEvent}
+            onEventDelete={deleteEvent}
           />
         </main>
 

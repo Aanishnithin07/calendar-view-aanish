@@ -1,18 +1,36 @@
 /**
  * CalendarView Component
- * Main calendar component with view switching and controls
- * Phase 2: Enhanced with CRUD event operations
+ * Phase 6 Prompt 13: Integrated calendar with navigation, event management, and modal interactions
+ * 
+ * Features:
+ * - Uses useCalendar for navigation state
+ * - Uses useEventManager for data state (via props)
+ * - Header with Month/Year, Prev/Today/Next buttons, and View Toggle
+ * - Conditional rendering of MonthView or WeekView
+ * - EventModal integration for Create and Edit modes
+ * - Responsive layout
  */
 
 import React, { useState } from 'react';
-import type { CalendarViewProps, CalendarViewType, CalendarConfig } from '@/types/calendar.types';
+import type { CalendarEvent } from '@/types/calendar.types';
 import { MonthView } from './MonthView';
 import { WeekView } from './WeekView';
+import { EventModal } from './EventModal';
 import { Button } from '@/components/primitives/Button';
-import { Select } from '@/components/primitives/Select';
-import { addMonths, getMonthName, addDays } from '@/utils/date.utils';
+import { useCalendar } from '@/hooks/useCalendar';
+import { formatDate } from '@/utils/date.utils';
 
-const DEFAULT_CONFIG: CalendarConfig = {
+/**
+ * CalendarView Props
+ */
+export interface CalendarViewProps {
+  events: CalendarEvent[];
+  onEventAdd: (event: Omit<CalendarEvent, 'id'>) => void;
+  onEventUpdate: (id: string, updates: Partial<CalendarEvent>) => void;
+  onEventDelete: (id: string) => void;
+}
+
+const DEFAULT_CONFIG = {
   locale: 'en-US',
   firstDayOfWeek: 0,
   showWeekNumbers: false,
@@ -20,92 +38,77 @@ const DEFAULT_CONFIG: CalendarConfig = {
   allowMultipleSelection: false,
 };
 
+/**
+ * CalendarView Component
+ * Phase 6 Prompt 13: Main calendar view with integrated event management
+ */
 export const CalendarView: React.FC<CalendarViewProps> = ({
-  initialDate = new Date(),
   events,
   onEventAdd,
   onEventUpdate,
   onEventDelete,
-  onDateSelect,
-  onEventClick,
-  config = {},
-  className = '',
 }) => {
-  // TODO: Phase 3 - Wire up CRUD operations to UI (modal dialogs)
-  // These will be used when implementing event creation/edit/delete modals
-  console.log('Event handlers available:', { onEventAdd, onEventUpdate, onEventDelete });
+  // Phase 6 Prompt 13: Use useCalendar for navigation state
+  const { state, handlers } = useCalendar();
+  const { currentDate, view } = state;
+  const { nextMonth, prevMonth, goToToday, setView } = handlers;
   
-  const [currentDate, setCurrentDate] = useState<Date>(initialDate);
-  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
-  const [viewType, setViewType] = useState<CalendarViewType>('month');
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | undefined>();
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   
-  const mergedConfig: CalendarConfig = { ...DEFAULT_CONFIG, ...config };
+  // Phase 6 Prompt 13: Pass onEventClick to open EventModal in 'Edit' mode
+  const handleEventClick = (event: CalendarEvent): void => {
+    setSelectedEvent(event);
+    setModalMode('edit');
+    setIsModalOpen(true);
+  };
   
-  // Navigation handlers
-  const handlePrevious = (): void => {
-    if (viewType === 'month') {
-      setCurrentDate(addMonths(currentDate, -1));
-    } else if (viewType === 'week') {
-      setCurrentDate(addDays(currentDate, -7));
+  // Phase 6 Prompt 13: Pass onCellClick to open EventModal in 'Create' mode
+  const handleCellClick = (date: Date): void => {
+    setSelectedDate(date);
+    setSelectedEvent(undefined);
+    setModalMode('create');
+    setIsModalOpen(true);
+  };
+  
+  // Handle modal save
+  const handleModalSave = (eventData: Omit<CalendarEvent, 'id'> | CalendarEvent): void => {
+    if (modalMode === 'create') {
+      onEventAdd(eventData as Omit<CalendarEvent, 'id'>);
+    } else if (modalMode === 'edit' && 'id' in eventData) {
+      const { id, ...updates } = eventData as CalendarEvent;
+      onEventUpdate(id, updates);
     }
   };
   
-  const handleNext = (): void => {
-    if (viewType === 'month') {
-      setCurrentDate(addMonths(currentDate, 1));
-    } else if (viewType === 'week') {
-      setCurrentDate(addDays(currentDate, 7));
-    }
+  // Handle modal delete
+  const handleModalDelete = (id: string): void => {
+    onEventDelete(id);
   };
   
-  const handleToday = (): void => {
-    setCurrentDate(new Date());
-  };
-  
-  // Date selection handler
-  const handleDateSelect = (date: Date): void => {
-    if (mergedConfig.allowMultipleSelection) {
-      setSelectedDates(prev => {
-        const isAlreadySelected = prev.some(d => 
-          d.getTime() === date.getTime()
-        );
-        
-        if (isAlreadySelected) {
-          return prev.filter(d => d.getTime() !== date.getTime());
-        }
-        return [...prev, date];
-      });
-    } else {
-      setSelectedDates([date]);
-    }
-    
-    onDateSelect?.(date);
-  };
-  
-  // Get display title
+  // Get display title for header
   const getDisplayTitle = (): string => {
-    const year = currentDate.getFullYear();
-    const month = getMonthName(currentDate.getMonth(), mergedConfig.locale);
-    
-    if (viewType === 'month') {
-      return `${month} ${year}`;
-    } else if (viewType === 'week') {
-      return `Week of ${month} ${currentDate.getDate()}, ${year}`;
+    if (view === 'month') {
+      return formatDate(currentDate, 'MMMM YYYY');
+    } else {
+      return `Week of ${formatDate(currentDate, 'MMM D, YYYY')}`;
     }
-    return `${month} ${year}`;
   };
   
   return (
-    <div className={`calendar-container ${className}`}>
-      {/* Calendar Header */}
-      <div className="calendar-header">
+    <div className="bg-white rounded-lg shadow-card overflow-hidden">
+      {/* Phase 6 Prompt 13: Header with Month/Year, Prev/Today/Next buttons, View Toggle */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-6 border-b border-neutral-200 bg-neutral-50">
         {/* Navigation Controls */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <Button
-            variant="ghost"
+            variant="secondary"
             size="sm"
-            onClick={handlePrevious}
-            aria-label="Previous"
+            onClick={prevMonth}
+            aria-label="Previous month"
           >
             <svg
               className="w-5 h-5"
@@ -121,18 +124,18 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           </Button>
           
           <Button
-            variant="ghost"
+            variant="secondary"
             size="sm"
-            onClick={handleToday}
+            onClick={goToToday}
           >
             Today
           </Button>
           
           <Button
-            variant="ghost"
+            variant="secondary"
             size="sm"
-            onClick={handleNext}
-            aria-label="Next"
+            onClick={nextMonth}
+            aria-label="Next month"
           >
             <svg
               className="w-5 h-5"
@@ -148,45 +151,62 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           </Button>
         </div>
         
-        {/* Current Date Display */}
-        <h2 className="text-xl font-semibold text-gray-900">
+        {/* Current Month/Year Display */}
+        <h2 className="text-2xl font-bold text-neutral-900">
           {getDisplayTitle()}
         </h2>
         
-        {/* View Selector */}
-        <Select
-          options={[
-            { value: 'month', label: 'Month' },
-            { value: 'week', label: 'Week' },
-          ]}
-          value={viewType}
-          onChange={(e) => setViewType(e.target.value as CalendarViewType)}
-          selectSize="sm"
-          aria-label="Calendar view type"
-        />
+        {/* Phase 6 Prompt 13: View Toggle - 'Month' | 'Week' */}
+        <div className="flex gap-2">
+          <Button
+            variant={view === 'month' ? 'primary' : 'secondary'}
+            size="sm"
+            onClick={() => setView('month')}
+          >
+            Month
+          </Button>
+          <Button
+            variant={view === 'week' ? 'primary' : 'secondary'}
+            size="sm"
+            onClick={() => setView('week')}
+          >
+            Week
+          </Button>
+        </div>
       </div>
       
       {/* Calendar Body */}
-      <div className="p-4">
-        {viewType === 'month' && (
+      <div className="p-6">
+        {/* Phase 6 Prompt 13: Conditional Rendering - If view === 'month', render MonthView */}
+        {view === 'month' && (
           <MonthView
             currentDate={currentDate}
             events={events}
-            selectedDates={selectedDates}
-            onDateSelect={handleDateSelect}
-            onEventClick={onEventClick}
-            config={mergedConfig}
+            onDateSelect={handleCellClick}
+            onEventClick={handleEventClick}
+            config={DEFAULT_CONFIG}
           />
         )}
         
-        {viewType === 'week' && (
+        {/* Phase 6 Prompt 13: Conditional Rendering - If view === 'week', render WeekView */}
+        {view === 'week' && (
           <WeekView
             currentDate={currentDate}
             events={events}
-            onEventClick={onEventClick}
+            onEventClick={handleEventClick}
           />
         )}
       </div>
+      
+      {/* Phase 6 Prompt 13: EventModal Integration */}
+      <EventModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleModalSave}
+        onDelete={handleModalDelete}
+        initialDate={selectedDate}
+        existingEvent={selectedEvent}
+      />
     </div>
   );
 };

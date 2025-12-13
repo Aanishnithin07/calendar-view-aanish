@@ -124,7 +124,6 @@ export interface CalendarViewProps {
 export interface MonthViewProps {
   currentDate: Date;
   events: CalendarEvent[];
-  selectedDates: Date[];
   onDateSelect: (date: Date) => void;
   onEventClick?: (event: CalendarEvent) => void;
   config: CalendarConfig;
