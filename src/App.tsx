@@ -1,44 +1,16 @@
 /**
  * App Component
  * Demo application showcasing the Calendar Component Library
- * Phase 2: Implements CRUD operations for events
+ * Phase 6 Prompt 10: Uses useEventManager hook with localStorage persistence
  */
 
-import { useState } from 'react';
 import { CalendarView } from '@/components/Calendar';
+import { useEventManager } from '@/hooks/useEventManager';
 import type { CalendarEvent } from '@/types/calendar.types';
 
 function App() {
-  // State management for events
-  const [events, setEvents] = useState<CalendarEvent[]>([
-    {
-      id: '1',
-      title: 'Team Meeting',
-      description: 'Weekly team sync',
-      startDate: new Date(2025, 11, 15, 10, 0),
-      endDate: new Date(2025, 11, 15, 11, 0),
-      color: '#0ea5e9',
-      category: 'Work',
-    },
-    {
-      id: '2',
-      title: 'Project Deadline',
-      description: 'Calendar component submission',
-      startDate: new Date(2025, 11, 20),
-      endDate: new Date(2025, 11, 20),
-      color: '#ef4444',
-      category: 'Important',
-      allDay: true,
-    },
-    {
-      id: '3',
-      title: 'Code Review',
-      startDate: new Date(2025, 11, 18, 14, 0),
-      endDate: new Date(2025, 11, 18, 15, 30),
-      color: '#10b981',
-      category: 'Development',
-    },
-  ]);
+  // Phase 6 Prompt 10: Use useEventManager hook for event state with localStorage
+  const { events, addEvent, updateEvent, deleteEvent } = useEventManager();
 
   // Event handlers
   const handleDateSelect = (date: Date): void => {
@@ -49,26 +21,19 @@ function App() {
     console.log('Event clicked:', event);
   };
 
+  // Phase 6 Prompt 10: Use the CRUD methods from useEventManager
   const handleEventAdd = (event: Omit<CalendarEvent, 'id'>): void => {
-    const newEvent: CalendarEvent = {
-      ...event,
-      id: `event-${Date.now()}`,
-    };
-    setEvents(prev => [...prev, newEvent]);
-    console.log('Event added:', newEvent);
+    const id = addEvent(event);
+    console.log('Event added with ID:', id);
   };
 
   const handleEventUpdate = (id: string, updates: Partial<CalendarEvent>): void => {
-    setEvents(prev =>
-      prev.map(event =>
-        event.id === id ? { ...event, ...updates } : event
-      )
-    );
+    updateEvent(id, updates);
     console.log('Event updated:', id, updates);
   };
 
   const handleEventDelete = (id: string): void => {
-    setEvents(prev => prev.filter(event => event.id !== id));
+    deleteEvent(id);
     console.log('Event deleted:', id);
   };
 
