@@ -94,31 +94,71 @@ export const getShortDayName = (day: number, locale = 'en-US'): string => {
 };
 
 /**
- * Format date to string
+ * Format date to string with custom format support
+ * Phase 2: Enhanced with format string support
+ * 
+ * @param date - The date to format
+ * @param formatStr - Format string or preset ('short' | 'long' | 'numeric' | custom)
+ * @param locale - Locale for formatting (default: 'en-US')
+ * 
+ * Supported format tokens:
+ * - YYYY: 4-digit year (e.g., 2025)
+ * - MM: 2-digit month (e.g., 01-12)
+ * - DD: 2-digit day (e.g., 01-31)
+ * - MMM: Short month name (e.g., Jan)
+ * - MMMM: Full month name (e.g., January)
+ * - ddd: Short day name (e.g., Mon)
+ * - dddd: Full day name (e.g., Monday)
  */
 export const formatDate = (
   date: Date,
-  format: 'short' | 'long' | 'numeric' = 'short',
+  formatStr: string | 'short' | 'long' | 'numeric' = 'short',
   locale = 'en-US'
 ): string => {
-  switch (format) {
-    case 'long':
-      return date.toLocaleDateString(locale, {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
-    case 'numeric':
-      return date.toLocaleDateString(locale);
-    case 'short':
-    default:
-      return date.toLocaleDateString(locale, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      });
+  // Handle preset formats
+  if (formatStr === 'long') {
+    return date.toLocaleDateString(locale, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
   }
+  
+  if (formatStr === 'numeric') {
+    return date.toLocaleDateString(locale);
+  }
+  
+  if (formatStr === 'short') {
+    return date.toLocaleDateString(locale, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+  
+  // Handle custom format strings
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+  const dayOfWeek = date.getDay();
+  
+  const tokens: Record<string, string> = {
+    'YYYY': year.toString(),
+    'MM': String(month + 1).padStart(2, '0'),
+    'DD': String(day).padStart(2, '0'),
+    'MMM': getShortMonthName(month, locale),
+    'MMMM': getMonthName(month, locale),
+    'ddd': getShortDayName(dayOfWeek, locale),
+    'dddd': getDayName(dayOfWeek, locale),
+  };
+  
+  let result = formatStr;
+  Object.keys(tokens).forEach(token => {
+    result = result.replace(new RegExp(token, 'g'), tokens[token]);
+  });
+  
+  return result;
 };
 
 // ============================================
@@ -253,6 +293,49 @@ export const getMonthDates = (
   }
   
   return dates;
+};
+
+/**
+ * Get calendar grid - returns exactly 42 dates (6 weeks x 7 days) for Month View
+ * Phase 2: Core calendar grid logic
+ * 
+ * @param date - The reference date (any date in the target month)
+ * @param firstDayOfWeek - 0 for Sunday, 1 for Monday, etc. (default: 0)
+ * @returns Array of exactly 42 dates representing the calendar grid
+ * 
+ * Algorithm:
+ * 1. Find the first day of the current month
+ * 2. Backtrack to the previous Monday/Sunday (based on locale)
+ * 3. Fill forward to get exactly 42 dates (6 weeks)
+ */
+export const getCalendarGrid = (
+  date: Date,
+  firstDayOfWeek: number = 0
+): Date[] => {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  
+  // Step 1: Get the first day of the current month
+  const firstDayOfMonth = new Date(year, month, 1);
+  
+  // Step 2: Backtrack to the start of the week (Monday or Sunday based on locale)
+  // Find how many days we need to go back
+  const firstDayOfMonthWeekday = firstDayOfMonth.getDay();
+  const daysToBacktrack = (firstDayOfMonthWeekday - firstDayOfWeek + 7) % 7;
+  
+  // Calculate the starting date of the grid
+  const gridStartDate = new Date(firstDayOfMonth);
+  gridStartDate.setDate(gridStartDate.getDate() - daysToBacktrack);
+  
+  // Step 3: Generate exactly 42 dates (6 weeks x 7 days)
+  const calendarGrid: Date[] = [];
+  for (let i = 0; i < 42; i++) {
+    const currentDate = new Date(gridStartDate);
+    currentDate.setDate(gridStartDate.getDate() + i);
+    calendarGrid.push(currentDate);
+  }
+  
+  return calendarGrid;
 };
 
 /**

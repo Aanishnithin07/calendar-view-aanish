@@ -1,13 +1,14 @@
 /**
  * MonthView Component
  * Displays a monthly calendar grid
+ * Phase 2: Using getCalendarGrid for consistent 42-date layout
  */
 
 import React from 'react';
 import type { MonthViewProps } from '@/types/calendar.types';
 import { CalendarCell } from './CalendarCell';
 import {
-  getMonthDates,
+  getCalendarGrid,
   getShortDayName,
   isSameDay,
 } from '@/utils/date.utils';
@@ -24,12 +25,8 @@ export const MonthView: React.FC<MonthViewProps> = ({
 }) => {
   const { firstDayOfWeek = 0 } = config;
   
-  // Get all dates for the month grid
-  const dates = getMonthDates(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    firstDayOfWeek
-  );
+  // Phase 2: Get exactly 42 dates (6 weeks x 7 days) for the month grid
+  const dates = getCalendarGrid(currentDate, firstDayOfWeek);
   
   // Generate day labels (Sun, Mon, Tue, etc.)
   const dayLabels = Array.from({ length: 7 }, (_, i) => {
