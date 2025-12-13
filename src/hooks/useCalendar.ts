@@ -1,116 +1,105 @@
 /**
  * useCalendar Hook
  * Custom hook for managing calendar state and navigation
+ * Phase 2: Structured with state and handlers for performance
  */
 
 import { useState, useCallback } from 'react';
-import type { CalendarConfig, CalendarViewType } from '@/types/calendar.types';
-import { addMonths, addDays } from '@/utils/date.utils';
+import type { ViewType } from '@/types/calendar.types';
+import { addMonths } from '@/utils/date.utils';
 
+/**
+ * Options for initializing the useCalendar hook
+ */
 export interface UseCalendarOptions {
   initialDate?: Date;
-  config?: CalendarConfig;
+  initialView?: ViewType;
 }
 
-export interface UseCalendarReturn {
+/**
+ * Calendar state
+ */
+export interface CalendarState {
   currentDate: Date;
-  selectedDates: Date[];
-  viewType: CalendarViewType;
-  config: CalendarConfig;
-  goToToday: () => void;
-  goToDate: (date: Date) => void;
-  nextPeriod: () => void;
-  previousPeriod: () => void;
-  selectDate: (date: Date) => void;
-  clearSelection: () => void;
-  setViewType: (type: CalendarViewType) => void;
+  view: ViewType;
 }
 
-const DEFAULT_CONFIG: CalendarConfig = {
-  locale: 'en-US',
-  firstDayOfWeek: 0,
-  showWeekNumbers: false,
-  highlightToday: true,
-  allowMultipleSelection: false,
-};
+/**
+ * Calendar handlers (all memoized with useCallback)
+ */
+export interface CalendarHandlers {
+  nextMonth: () => void;
+  prevMonth: () => void;
+  goToToday: () => void;
+  setView: (view: ViewType) => void;
+}
 
+/**
+ * Return type for useCalendar hook
+ * Phase 2: Returns { state, handlers } structure
+ */
+export interface UseCalendarReturn {
+  state: CalendarState;
+  handlers: CalendarHandlers;
+}
+
+/**
+ * useCalendar - Custom hook for calendar state management
+ * Phase 2: Performance optimized with useCallback
+ * 
+ * @param options - Initial configuration
+ * @returns Object with state and handlers
+ * 
+ * @example
+ * const { state, handlers } = useCalendar({
+ *   initialDate: new Date(),
+ *   initialView: 'month'
+ * });
+ */
 export const useCalendar = (
   options: UseCalendarOptions = {}
 ): UseCalendarReturn => {
-  const { initialDate = new Date(), config = {} } = options;
+  const { initialDate = new Date(), initialView = 'month' } = options;
   
+  // State management
   const [currentDate, setCurrentDate] = useState<Date>(initialDate);
-  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
-  const [viewType, setViewType] = useState<CalendarViewType>('month');
+  const [view, setView] = useState<ViewType>(initialView);
   
-  const mergedConfig: CalendarConfig = { ...DEFAULT_CONFIG, ...config };
+  // Handler: Navigate to next month
+  // Performance: Memoized with useCallback to prevent unnecessary re-renders
+  const nextMonth = useCallback((): void => {
+    setCurrentDate(prev => addMonths(prev, 1));
+  }, []);
   
+  // Handler: Navigate to previous month
+  // Performance: Memoized with useCallback to prevent unnecessary re-renders
+  const prevMonth = useCallback((): void => {
+    setCurrentDate(prev => addMonths(prev, -1));
+  }, []);
+  
+  // Handler: Navigate to today's date
+  // Performance: Memoized with useCallback to prevent unnecessary re-renders
   const goToToday = useCallback((): void => {
     setCurrentDate(new Date());
   }, []);
   
-  const goToDate = useCallback((date: Date): void => {
-    setCurrentDate(date);
+  // Handler: Change view type (month/week)
+  // Performance: Memoized with useCallback to prevent unnecessary re-renders
+  const handleSetView = useCallback((newView: ViewType): void => {
+    setView(newView);
   }, []);
   
-  const nextPeriod = useCallback((): void => {
-    setCurrentDate(prev => {
-      switch (viewType) {
-        case 'month':
-          return addMonths(prev, 1);
-        case 'week':
-          return addDays(prev, 7);
-        case 'day':
-          return addDays(prev, 1);
-        default:
-          return prev;
-      }
-    });
-  }, [viewType]);
-  
-  const previousPeriod = useCallback((): void => {
-    setCurrentDate(prev => {
-      switch (viewType) {
-        case 'month':
-          return addMonths(prev, -1);
-        case 'week':
-          return addDays(prev, -7);
-        case 'day':
-          return addDays(prev, -1);
-        default:
-          return prev;
-      }
-    });
-  }, [viewType]);
-  
-  const selectDate = useCallback((date: Date): void => {
-    setSelectedDates(prev => {
-      if (mergedConfig.allowMultipleSelection) {
-        const isAlreadySelected = prev.some(d => d.getTime() === date.getTime());
-        if (isAlreadySelected) {
-          return prev.filter(d => d.getTime() !== date.getTime());
-        }
-        return [...prev, date];
-      }
-      return [date];
-    });
-  }, [mergedConfig.allowMultipleSelection]);
-  
-  const clearSelection = useCallback((): void => {
-    setSelectedDates([]);
-  }, []);
-  
+  // Phase 2: Return structured state and handlers
   return {
-    currentDate,
-    selectedDates,
-    viewType,
-    config: mergedConfig,
-    goToToday,
-    goToDate,
-    nextPeriod,
-    previousPeriod,
-    selectDate,
-    clearSelection,
-    setViewType,
+    state: {
+      currentDate,
+      view,
+    },
+    handlers: {
+      nextMonth,
+      prevMonth,
+      goToToday,
+      setView: handleSetView,
+    },
   };
 };
