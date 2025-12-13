@@ -6,7 +6,7 @@
 
 import { useState, useCallback } from 'react';
 import type { ViewType } from '@/types/calendar.types';
-import { addMonths } from '@/utils/date.utils';
+import { addMonths, addDays } from '@/utils/date.utils';
 
 /**
  * Options for initializing the useCalendar hook
@@ -30,6 +30,8 @@ export interface CalendarState {
 export interface CalendarHandlers {
   nextMonth: () => void;
   prevMonth: () => void;
+  nextWeek: () => void;
+  prevWeek: () => void;
   goToToday: () => void;
   setView: (view: ViewType) => void;
 }
@@ -77,6 +79,18 @@ export const useCalendar = (
     setCurrentDate(prev => addMonths(prev, -1));
   }, []);
   
+  // Handler: Navigate to next week
+  // Performance: Memoized with useCallback to prevent unnecessary re-renders
+  const nextWeek = useCallback((): void => {
+    setCurrentDate(prev => addDays(prev, 7));
+  }, []);
+  
+  // Handler: Navigate to previous week
+  // Performance: Memoized with useCallback to prevent unnecessary re-renders
+  const prevWeek = useCallback((): void => {
+    setCurrentDate(prev => addDays(prev, -7));
+  }, []);
+  
   // Handler: Navigate to today's date
   // Performance: Memoized with useCallback to prevent unnecessary re-renders
   const goToToday = useCallback((): void => {
@@ -98,6 +112,8 @@ export const useCalendar = (
     handlers: {
       nextMonth,
       prevMonth,
+      nextWeek,
+      prevWeek,
       goToToday,
       setView: handleSetView,
     },

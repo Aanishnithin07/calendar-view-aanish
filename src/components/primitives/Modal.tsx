@@ -103,7 +103,7 @@ export const Modal: React.FC<ModalProps> = ({
   
   return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black transition-opacity duration-300 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 bg-black transition-opacity duration-300 ${
         isAnimating ? 'bg-opacity-50' : 'bg-opacity-0'
       }`}
       onClick={handleBackdropClick}
@@ -113,7 +113,7 @@ export const Modal: React.FC<ModalProps> = ({
     >
       <div
         ref={modalRef}
-        className={`bg-white rounded-lg shadow-modal w-full ${sizeStyles[size]} ${className} 
+        className={`bg-white sm:rounded-lg shadow-modal w-full h-full sm:h-auto ${sizeStyles[size]} ${className} 
           transition-all duration-300 transform ${
           isAnimating 
             ? 'opacity-100 scale-100 translate-y-0' 
@@ -153,7 +153,7 @@ export const Modal: React.FC<ModalProps> = ({
         )}
         
         {/* Content */}
-        <div className="px-6 py-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+        <div className="px-4 sm:px-6 py-4 h-[calc(100vh-120px)] sm:h-auto sm:max-h-[calc(100vh-200px)] overflow-y-auto">
           {children}
         </div>
       </div>

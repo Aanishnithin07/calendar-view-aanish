@@ -95,7 +95,7 @@ const CalendarCellComponent: React.FC<CalendarCellProps> = ({
           {visibleEvents.map((event) => (
             <div
               key={event.id}
-              className="text-xs px-2 py-1 rounded truncate cursor-pointer hover:opacity-80 transition-opacity"
+              className="text-xs px-2 py-1 rounded truncate cursor-pointer hover:opacity-80 hover:scale-105 hover:shadow-md transition-all duration-150"
               style={{ backgroundColor: event.color || '#0ea5e9', color: 'white' }}
               onClick={(e) => handleEventClick(event, e)}
               title={event.title}
