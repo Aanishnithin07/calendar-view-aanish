@@ -1,97 +1,140 @@
 /**
  * CalendarCell Component
- * Individual cell in the calendar grid representing a single day
+ * Phase 4 Prompt 7: Individual cell in the calendar grid representing a single day
+ * 
+ * Features:
+ * - Fixed height (min-h-[120px]) for consistent grid layout
+ * - Day number displayed in top right corner
+ * - isToday indicator: circled number with bg-primary-500 text-white
+ * - isCurrentMonth: gray out text (text-neutral-300) when false
+ * - Event list with max 3 visible, '+X more' button for overflow
+ * - React.memo wrapper for performance optimization
  */
 
-import React from 'react';
-import type { CalendarCellProps } from '@/types/calendar.types';
-import { formatDate } from '@/utils/date.utils';
+import React, { useState } from 'react';
+import type { CalendarEvent } from '@/types/calendar.types';
 
-export const CalendarCell: React.FC<CalendarCellProps> = ({
+/**
+ * CalendarCell Props
+ * Phase 4 Prompt 7 specification
+ */
+export interface CalendarCellProps {
+  date: Date;
+  events: CalendarEvent[];
+  isToday: boolean;
+  isCurrentMonth: boolean;
+  onEventClick?: (event: CalendarEvent) => void;
+  onCellClick?: (date: Date) => void;
+}
+
+/**
+ * CalendarCell Component
+ * Renders a single day cell in the calendar grid
+ * Wrapped with React.memo for performance optimization
+ */
+const CalendarCellComponent: React.FC<CalendarCellProps> = ({
   date,
-  isSelected,
-  onSelect,
+  events,
+  isToday,
+  isCurrentMonth,
   onEventClick,
-  className = '',
+  onCellClick,
 }) => {
-  const handleClick = (): void => {
-    if (!date.isDisabled) {
-      onSelect(date.date);
+  const [showAllEvents, setShowAllEvents] = useState(false);
+  
+  const dayNumber = date.getDate();
+  const visibleEvents = showAllEvents ? events : events.slice(0, 3);
+  const hasMoreEvents = events.length > 3;
+  const hiddenEventsCount = events.length - 3;
+  
+  const handleCellClick = (): void => {
+    if (onCellClick) {
+      onCellClick(date);
     }
   };
   
-  const handleEventClick = (event: React.MouseEvent, eventId: string): void => {
-    event.stopPropagation();
-    const clickedEvent = date.events.find(e => e.id === eventId);
-    if (clickedEvent && onEventClick) {
-      onEventClick(clickedEvent);
+  const handleEventClick = (event: CalendarEvent, e: React.MouseEvent): void => {
+    e.stopPropagation();
+    if (onEventClick) {
+      onEventClick(event);
     }
   };
   
-  const baseStyles = 'calendar-cell relative';
-  const todayStyles = date.isToday ? 'calendar-cell-today' : '';
-  const selectedStyles = isSelected ? 'calendar-cell-selected' : '';
-  const disabledStyles = date.isDisabled ? 'calendar-cell-disabled' : '';
-  const otherMonthStyles = !date.isCurrentMonth ? 'text-gray-400' : 'text-gray-900';
-  const weekendStyles = date.isWeekend && !date.isDisabled ? 'bg-gray-50' : '';
-  
-  const combinedClassName = [
-    baseStyles,
-    todayStyles,
-    selectedStyles,
-    disabledStyles,
-    otherMonthStyles,
-    weekendStyles,
-    className,
-  ].filter(Boolean).join(' ');
+  const handleMoreClick = (e: React.MouseEvent): void => {
+    e.stopPropagation();
+    setShowAllEvents(!showAllEvents);
+  };
   
   return (
     <div
-      className={combinedClassName}
-      onClick={handleClick}
+      className="min-h-[120px] border border-neutral-200 p-2 hover:bg-neutral-50 transition-colors cursor-pointer overflow-hidden"
+      onClick={handleCellClick}
       role="gridcell"
-      aria-selected={isSelected}
-      aria-disabled={date.isDisabled}
-      aria-label={formatDate(date.date, 'long')}
+      aria-label={`${date.toLocaleDateString()}, ${events.length} events`}
     >
-      {/* Date number */}
-      <div className="text-sm font-medium mb-1">
-        {date.day}
+      {/* Day number in top right */}
+      <div className="flex justify-end mb-1">
+        {isToday ? (
+          <div className="flex items-center justify-center w-7 h-7 rounded-full bg-primary-500 text-white text-sm font-semibold">
+            {dayNumber}
+          </div>
+        ) : (
+          <div
+            className={`text-sm font-medium ${
+              isCurrentMonth ? 'text-neutral-900' : 'text-neutral-300'
+            }`}
+          >
+            {dayNumber}
+          </div>
+        )}
       </div>
       
-      {/* Event indicators */}
-      {date.events.length > 0 && (
+      {/* Event list */}
+      {events.length > 0 && (
         <div className="space-y-1">
-          {date.events.slice(0, 3).map((event) => (
+          {visibleEvents.map((event) => (
             <div
               key={event.id}
-              className="text-xs px-1 py-0.5 rounded truncate cursor-pointer hover:opacity-80 transition-opacity"
-              style={{ backgroundColor: event.color || '#3b82f6', color: 'white' }}
-              onClick={(e) => handleEventClick(e, event.id)}
+              className="text-xs px-2 py-1 rounded truncate cursor-pointer hover:opacity-80 transition-opacity"
+              style={{ backgroundColor: event.color || '#0ea5e9', color: 'white' }}
+              onClick={(e) => handleEventClick(event, e)}
               title={event.title}
             >
               {event.title}
             </div>
           ))}
-          {date.events.length > 3 && (
-            <div className="text-xs text-gray-500 px-1">
-              +{date.events.length - 3} more
-            </div>
+          
+          {/* +X more button */}
+          {hasMoreEvents && !showAllEvents && (
+            <button
+              className="text-xs text-primary-500 hover:text-primary-600 font-medium w-full text-left px-2 py-1 hover:bg-primary-50 rounded transition-colors"
+              onClick={handleMoreClick}
+              type="button"
+            >
+              +{hiddenEventsCount} more
+            </button>
           )}
-        </div>
-      )}
-      
-      {/* Today indicator */}
-      {date.isToday && (
-        <div className="absolute top-1 right-1">
-          <span className="flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-          </span>
+          
+          {/* Show less button */}
+          {showAllEvents && hasMoreEvents && (
+            <button
+              className="text-xs text-primary-500 hover:text-primary-600 font-medium w-full text-left px-2 py-1 hover:bg-primary-50 rounded transition-colors"
+              onClick={handleMoreClick}
+              type="button"
+            >
+              Show less
+            </button>
+          )}
         </div>
       )}
     </div>
   );
 };
+
+/**
+ * Export with React.memo for performance optimization
+ * Prevents unnecessary re-renders when props haven't changed
+ */
+export const CalendarCell = React.memo(CalendarCellComponent);
 
 CalendarCell.displayName = 'CalendarCell';

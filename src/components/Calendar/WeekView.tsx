@@ -17,7 +17,6 @@ import { getEventsForDate } from '@/utils/event.utils';
 export const WeekView: React.FC<WeekViewProps> = ({
   currentDate,
   events,
-  selectedDates,
   onDateSelect,
   onEventClick,
   config,
@@ -58,32 +57,19 @@ export const WeekView: React.FC<WeekViewProps> = ({
       {/* Week grid */}
       <div className="grid grid-cols-7 gap-px bg-gray-200 mt-px">
         {weekDates.map((date, index) => {
-          const isSelected = selectedDates.some(selected => 
-            isSameDay(selected, date)
-          );
-          
           const dayEvents = getEventsForDate(events, date);
-          
-          const calendarDate = {
-            year: date.getFullYear(),
-            month: date.getMonth(),
-            day: date.getDate(),
-            date: date,
-            isToday: isSameDay(date, new Date()),
-            isCurrentMonth: true, // In week view, all days are "current"
-            isWeekend: date.getDay() === 0 || date.getDay() === 6,
-            isDisabled: false,
-            events: dayEvents,
-          };
+          const isToday = isSameDay(date, new Date());
+          const isCurrentMonth = true; // In week view, all days are "current"
           
           return (
             <CalendarCell
               key={`cell-${index}`}
-              date={calendarDate}
-              isSelected={isSelected}
-              onSelect={onDateSelect}
+              date={date}
+              events={dayEvents}
+              isToday={isToday}
+              isCurrentMonth={isCurrentMonth}
               onEventClick={onEventClick}
-              className="min-h-[120px]"
+              onCellClick={onDateSelect}
             />
           );
         })}

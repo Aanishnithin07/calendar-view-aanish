@@ -17,7 +17,6 @@ import { getEventsForDate } from '@/utils/event.utils';
 export const MonthView: React.FC<MonthViewProps> = ({
   currentDate,
   events,
-  selectedDates,
   onDateSelect,
   onEventClick,
   config,
@@ -35,13 +34,13 @@ export const MonthView: React.FC<MonthViewProps> = ({
   });
   
   return (
-    <div className={`month-view ${className}`} role="grid">
-      {/* Day labels header */}
-      <div className="calendar-grid">
+    <div className={`${className}`} role="grid">
+      {/* Day labels header - Phase 4: 7-column grid */}
+      <div className="grid grid-cols-7 gap-0 mb-2">
         {dayLabels.map((label, index) => (
           <div
             key={`day-label-${index}`}
-            className="calendar-day-label"
+            className="text-center text-sm font-semibold text-neutral-700 py-2"
             role="columnheader"
           >
             {label}
@@ -49,34 +48,22 @@ export const MonthView: React.FC<MonthViewProps> = ({
         ))}
       </div>
       
-      {/* Calendar grid */}
-      <div className="calendar-grid">
+      {/* Calendar grid - Phase 4: 7-column grid layout */}
+      <div className="grid grid-cols-7 gap-0">
         {dates.map((date, index) => {
-          const isSelected = selectedDates.some(selected => 
-            isSameDay(selected, date)
-          );
-          
           const dayEvents = getEventsForDate(events, date);
-          
-          const calendarDate = {
-            year: date.getFullYear(),
-            month: date.getMonth(),
-            day: date.getDate(),
-            date: date,
-            isToday: isSameDay(date, new Date()),
-            isCurrentMonth: date.getMonth() === currentDate.getMonth(),
-            isWeekend: date.getDay() === 0 || date.getDay() === 6,
-            isDisabled: false, // TODO: Implement with config.minDate, maxDate, disabledDates
-            events: dayEvents,
-          };
+          const isToday = isSameDay(date, new Date());
+          const isCurrentMonth = date.getMonth() === currentDate.getMonth();
           
           return (
             <CalendarCell
               key={`cell-${index}`}
-              date={calendarDate}
-              isSelected={isSelected}
-              onSelect={onDateSelect}
+              date={date}
+              events={dayEvents}
+              isToday={isToday}
+              isCurrentMonth={isCurrentMonth}
               onEventClick={onEventClick}
+              onCellClick={onDateSelect}
             />
           );
         })}
