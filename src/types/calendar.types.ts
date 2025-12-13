@@ -1,19 +1,25 @@
 /**
  * Core Calendar Type Definitions
  * Strict TypeScript types for Calendar Component Library
+ * Phase 2: Core type definitions for calendar functionality
  */
 
 // ============================================
 // Event Types
 // ============================================
 
+/**
+ * CalendarEvent - Core event type for calendar items
+ * All fields are strictly typed for type safety
+ */
 export interface CalendarEvent {
   id: string;
   title: string;
   description?: string;
   startDate: Date;
   endDate: Date;
-  color?: string;
+  color: string;
+  category?: string;
   allDay?: boolean;
   recurring?: RecurringPattern;
   metadata?: Record<string, unknown>;
@@ -33,7 +39,16 @@ export interface RecurringPattern {
 // Calendar View Types
 // ============================================
 
-export type CalendarViewType = 'month' | 'week' | 'day';
+/**
+ * ViewType - Supported calendar view types
+ * Phase 2: month and week views
+ */
+export type ViewType = 'month' | 'week';
+
+/**
+ * CalendarViewType - Alias for ViewType (backwards compatibility)
+ */
+export type CalendarViewType = ViewType | 'day';
 
 export interface CalendarDate {
   year: number;
@@ -90,12 +105,18 @@ export interface CalendarState {
 // Component Props
 // ============================================
 
+/**
+ * CalendarViewProps - Main calendar component props
+ * Phase 2: Includes CRUD operations for events
+ */
 export interface CalendarViewProps {
   initialDate?: Date;
-  events?: CalendarEvent[];
+  events: CalendarEvent[];
+  onEventAdd: (event: Omit<CalendarEvent, 'id'>) => void;
+  onEventUpdate: (id: string, event: Partial<CalendarEvent>) => void;
+  onEventDelete: (id: string) => void;
   onDateSelect?: (date: Date) => void;
   onEventClick?: (event: CalendarEvent) => void;
-  onDateRangeChange?: (startDate: Date, endDate: Date) => void;
   config?: CalendarConfig;
   className?: string;
 }

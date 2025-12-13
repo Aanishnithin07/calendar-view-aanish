@@ -1,6 +1,7 @@
 /**
  * CalendarView Component
  * Main calendar component with view switching and controls
+ * Phase 2: Enhanced with CRUD event operations
  */
 
 import React, { useState } from 'react';
@@ -21,12 +22,19 @@ const DEFAULT_CONFIG: CalendarConfig = {
 
 export const CalendarView: React.FC<CalendarViewProps> = ({
   initialDate = new Date(),
-  events = [],
+  events,
+  onEventAdd,
+  onEventUpdate,
+  onEventDelete,
   onDateSelect,
   onEventClick,
   config = {},
   className = '',
 }) => {
+  // TODO: Phase 3 - Wire up CRUD operations to UI (modal dialogs)
+  // These will be used when implementing event creation/edit/delete modals
+  console.log('Event handlers available:', { onEventAdd, onEventUpdate, onEventDelete });
+  
   const [currentDate, setCurrentDate] = useState<Date>(initialDate);
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [viewType, setViewType] = useState<CalendarViewType>('month');
