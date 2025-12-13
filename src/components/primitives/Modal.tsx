@@ -1,9 +1,16 @@
 /**
  * Modal Primitive Component
- * An accessible modal dialog with backdrop
+ * Phase 3: Custom modal component without external UI libraries
+ * Features:
+ * - Portal rendering for proper z-index stacking
+ * - Backdrop with bg-black/50
+ * - ARIA attributes: role="dialog", aria-modal="true"
+ * - CSS transitions for smooth enter/leave animations
+ * - Escape key and backdrop click handling
+ * - Focus trap and body scroll lock
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 export interface ModalProps {
@@ -30,6 +37,14 @@ export const Modal: React.FC<ModalProps> = ({
   className = '',
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  
+  // Handle animation state
+  useEffect(() => {
+    if (isOpen) {
+      setIsAnimating(true);
+    }
+  }, [isOpen]);
   
   // Handle escape key
   useEffect(() => {
@@ -88,7 +103,9 @@ export const Modal: React.FC<ModalProps> = ({
   
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 animate-fade-in"
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black transition-opacity duration-300 ${
+        isAnimating ? 'bg-opacity-50' : 'bg-opacity-0'
+      }`}
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
@@ -96,22 +113,28 @@ export const Modal: React.FC<ModalProps> = ({
     >
       <div
         ref={modalRef}
-        className={`bg-white rounded-lg shadow-xl w-full ${sizeStyles[size]} animate-slide-up ${className}`}
+        className={`bg-white rounded-lg shadow-modal w-full ${sizeStyles[size]} ${className} 
+          transition-all duration-300 transform ${
+          isAnimating 
+            ? 'opacity-100 scale-100 translate-y-0' 
+            : 'opacity-0 scale-95 translate-y-4'
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         {(title || showCloseButton) && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200">
             {title && (
-              <h2 id="modal-title" className="text-xl font-semibold text-gray-900">
+              <h2 id="modal-title" className="text-xl font-semibold text-neutral-900">
                 {title}
               </h2>
             )}
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                className="text-neutral-400 hover:text-neutral-600 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 rounded p-1"
                 aria-label="Close modal"
+                type="button"
               >
                 <svg
                   className="w-6 h-6"

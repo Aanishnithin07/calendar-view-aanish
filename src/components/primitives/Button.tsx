@@ -1,12 +1,18 @@
 /**
  * Button Primitive Component
- * A reusable, accessible button component with variants
+ * Phase 3: Custom button component without external UI libraries
+ * Uses Tailwind with design system colors (primary-500, etc.)
+ * Supports className override for flexibility
  */
 
 import React from 'react';
 
+/**
+ * Button component props
+ * Extends native HTML button props for full compatibility
+ */
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
   isLoading?: boolean;
@@ -14,6 +20,15 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   rightIcon?: React.ReactNode;
 }
 
+/**
+ * Button Component
+ * A flexible button supporting primary, secondary, and danger variants
+ * 
+ * @example
+ * <Button variant="primary" onClick={handleClick}>
+ *   Click Me
+ * </Button>
+ */
 export const Button: React.FC<ButtonProps> = ({
   children,
   variant = 'primary',
@@ -26,23 +41,28 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  // Base styles - common to all buttons
+  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm';
   
+  // Variant styles using design system colors
   const variantStyles = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
-    secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500',
-    ghost: 'bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
+    primary: 'bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700 focus:ring-primary-500',
+    secondary: 'bg-neutral-200 text-neutral-900 hover:bg-neutral-300 active:bg-neutral-300 focus:ring-neutral-700 border border-neutral-300',
+    ghost: 'bg-transparent text-neutral-700 hover:bg-neutral-100 active:bg-neutral-200 focus:ring-neutral-500',
+    danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:ring-red-500',
   };
   
+  // Size variants
   const sizeStyles = {
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-4 py-2 text-base',
     lg: 'px-6 py-3 text-lg',
   };
   
+  // Width handling
   const widthStyle = fullWidth ? 'w-full' : '';
   
+  // Combine all classes - className prop allows override
   const combinedClassName = [
     baseStyles,
     variantStyles[variant],
