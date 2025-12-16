@@ -1,125 +1,117 @@
-# 📅 Calendar Component Library
+# Calendar View Component
 
-> Production-grade React calendar component with TypeScript, Tailwind CSS, and full accessibility support - Built for professional interviews and real-world applications.
+## Live Demo
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.6.2-blue.svg)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-18.3.1-61dafb.svg)](https://reactjs.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1.0-38bdf8.svg)](https://tailwindcss.com/)
-[![Vite](https://img.shields.io/badge/Vite-7.2.7-646cff.svg)](https://vitejs.dev/)
+**Application**: [https://your-vercel-deployment.vercel.app](https://your-vercel-deployment.vercel.app)  
+**Storybook**: [https://your-storybook-deployment.vercel.app](https://your-storybook-deployment.vercel.app)
 
-## ✨ Features
+> Replace the URLs above after deployment
 
-### Core Functionality
-- ✅ **Multiple Views**: Month grid (42 days) and Week timeline (hourly slots)
-- ✅ **Event Management**: Full CRUD with form validation and color picker
-- ✅ **LocalStorage Persistence**: Events survive page refresh
-- ✅ **Strict TypeScript**: Full type safety with strict mode enabled
+## Installation
 
-### User Experience
-- ✅ **Floating Action Button**: Quick event creation access
-- ✅ **Toast Notifications**: Success/error feedback for all actions
-- ✅ **Empty State**: Friendly onboarding when no events exist
-- ✅ **Delete Confirmation**: Prevents accidental deletions
-- ✅ **Keyboard Shortcuts**: N (new), ←/→ (navigate), T (today), ESC (close)
+```bash
+# Install dependencies
+npm install
 
-### Design & Accessibility
-- ✅ **Mobile Responsive**: Full-screen modals, touch-friendly (48px buttons)
-- ✅ **Accessible**: ARIA labels, keyboard navigation, screen reader friendly
-- ✅ **Smooth Animations**: Transitions, hover effects, micro-interactions
-- ✅ **Custom Design System**: Tailwind CSS v4 with custom theme
-
-### Technical Excellence
-- ✅ **No External UI Libraries**: All primitives built from scratch
-- ✅ **Performance Optimized**: React.memo, useCallback, code splitting
-- ✅ **Custom Hooks**: `useCalendar` and `useEventManager`
-- ✅ **Storybook Ready**: Visual component testing
-- ✅ **Production Build**: Zero TypeScript errors, 220KB gzipped
-
-## 📁 Project Structure
-
-\`\`\`
-src/
-├── components/
-│   ├── Calendar/           # Main calendar components
-│   │   ├── CalendarView.tsx
-│   │   ├── MonthView.tsx
-│   │   ├── WeekView.tsx
-│   │   ├── CalendarCell.tsx
-│   │   └── index.ts
-│   └── primitives/         # UI primitives (no external libs)
-│       ├── Button.tsx
-│       ├── Modal.tsx
-│       ├── Select.tsx
-│       └── index.ts
-├── hooks/                  # Custom React hooks
-│   ├── useCalendar.ts
-│   ├── useEventManager.ts
-│   └── index.ts
-├── utils/                  # Utility functions
-│   ├── date.utils.ts
-│   └── event.utils.ts
-├── types/                  # TypeScript type definitions
-│   └── calendar.types.ts
-└── styles/                 # Global styles
-    └── globals.css
-\`\`\`
-
-## 🚀 Getting Started
-
-### Development
-
-\`\`\`bash
-# Start dev server
+# Run development server
 npm run dev
-\`\`\`
 
-### Build
+# Run Storybook
+npm run storybook
 
-\`\`\`bash
 # Build for production
 npm run build
-\`\`\`
+```
 
-## 📚 Usage Example
+## Architecture
 
-\`\`\`tsx
-import { CalendarView } from '@/components/Calendar';
-import type { CalendarEvent } from '@/types/calendar.types';
+Built using a Clean Architecture approach. The application is organized into:
 
-const events: CalendarEvent[] = [
-  {
-    id: '1',
-    title: 'Meeting',
-    startDate: new Date(2025, 11, 15),
-    endDate: new Date(2025, 11, 15),
-    color: '#3b82f6',
-  },
-];
+- **components/Calendar**: Core domain logic (CalendarView, MonthView, WeekView, CalendarCell, EventModal)
+- **components/primitives**: Reusable, accessible UI components (Button, Modal, Toast, Select) - No external libraries
+- **hooks**: Custom React hooks (useCalendar, useEventManager) to separate state management from UI
+- **utils**: Pure functions for date manipulation and event validation
+- **types**: Comprehensive TypeScript type definitions
 
-function App() {
-  return (
-    <CalendarView
-      events={events}
-      onDateSelect={(date) => console.log('Selected:', date)}
-      onEventClick={(event) => console.log('Event:', event)}
-    />
-  );
-}
-\`\`\`
+## Features
 
-## 🎯 Tech Stack
+- [x] **Month & Week Views**: Full 6-week grid (42 days) and hourly timeline (00:00-23:00)
+- [x] **Event Management**: Create, Edit, Delete with form validation and color picker
+- [x] **Local Persistence**: Data survives page reloads using localStorage
+- [x] **Keyboard Accessibility**: Full navigation support (N for new, Arrow keys for navigation, T for today, ESC to close)
+- [x] **Responsive Design**: Mobile-first approach with floating action button and touch optimizations
+- [x] **Toast Notifications**: Success/error feedback for all operations
+- [x] **Empty State**: User-friendly onboarding when no events exist
+- [x] **Delete Confirmation**: Modal confirmation to prevent accidental deletions
 
-- **React 18** - UI library
-- **TypeScript 15** - Strict type checking
-- **Tailwind CSS** - Utility-first CSS
-- **Vite** - Build tool
+## Storybook Stories
 
-## 🏗️ Architecture
+The component library includes comprehensive Storybook documentation:
 
-1. **Strict TypeScript**: All code is fully typed
-2. **Modular Design**: Separated components, hooks, and utilities
-3. **Custom Primitives**: No external UI library dependencies
-4. **Barrel Exports**: Clean imports with index files
-5. **Path Aliases**: Absolute imports with `@/` prefix
+- **Default**: Interactive calendar with sample events
+- **Empty**: Zero-state visualization
+- **Week View**: Timeline view demonstration
+- **Mobile**: Responsive layout verification
+- **Many Events**: Stress-test with multiple events per day
 
-Built for senior-level calendar component assignment.
+## Technologies
+
+- **React 18.3.1** with TypeScript 5.6.2 (Strict Mode)
+- **Tailwind CSS v4.1.0** for styling
+- **Storybook 10.1.8** for component documentation
+- **Vite 7.2.7** as build tool
+- **ESLint** for code quality
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── Calendar/
+│   │   ├── CalendarView.tsx      # Main orchestrator
+│   │   ├── MonthView.tsx         # Monthly grid layout
+│   │   ├── WeekView.tsx          # Weekly timeline
+│   │   ├── CalendarCell.tsx      # Individual day cell
+│   │   ├── EventModal.tsx        # CRUD form
+│   │   ├── EmptyState.tsx        # Zero-state UI
+│   │   └── index.ts
+│   └── primitives/
+│       ├── Button.tsx            # Accessible button
+│       ├── Modal.tsx             # Portal-based modal
+│       ├── Toast.tsx             # Notification system
+│       ├── Select.tsx            # Styled dropdown
+│       └── index.ts
+├── hooks/
+│   ├── useCalendar.ts            # Navigation state
+│   ├── useEventManager.ts        # Event CRUD + persistence
+│   └── index.ts
+├── utils/
+│   ├── date.utils.ts             # Date manipulation (30+ functions)
+│   └── event.utils.ts            # Event filtering & validation
+├── types/
+│   └── calendar.types.ts         # TypeScript definitions
+└── styles/
+    └── globals.css               # Global styles
+```
+
+## Development
+
+```bash
+# Development server with HMR
+npm run dev
+
+# TypeScript type checking
+npm run build
+
+# Storybook development
+npm run storybook
+
+# Build Storybook for deployment
+npm run build-storybook
+```
+
+## Contact
+
+**Developer**: Aanish Nithin  
+**Email**: aanishnithin07@gmail.com  
+**Repository**: [https://github.com/Aanishnithin07/calendar-view-aanish](https://github.com/Aanishnithin07/calendar-view-aanish)
