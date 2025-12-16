@@ -46,11 +46,11 @@ export const MonthView: React.FC<MonthViewProps> = ({
   return (
     <div className={`${className}`} role="grid" aria-label="Month calendar view">
       {/* Phase 4 Prompt 8: Render Day Headers (Mon, Tue, Wed...) at the top */}
-      <div className="grid grid-cols-7 gap-0 mb-2 border-b border-neutral-200">
+      <div className="grid grid-cols-7 gap-0 bg-gradient-to-b from-neutral-100 to-neutral-50 rounded-t-lg overflow-hidden border-b-2 border-neutral-300">
         {dayLabels.map((label, index) => (
           <div
             key={`day-label-${index}`}
-            className="text-center text-sm font-semibold text-neutral-700 py-3 border-r border-neutral-100 last:border-r-0"
+            className="text-center text-sm font-bold text-neutral-800 py-4 border-r border-neutral-200 last:border-r-0 uppercase tracking-wider"
             role="columnheader"
           >
             {label}
@@ -59,7 +59,7 @@ export const MonthView: React.FC<MonthViewProps> = ({
       </div>
       
       {/* Phase 4 Prompt 8: CSS Grid with grid grid-cols-7 */}
-      <div className="grid grid-cols-7 gap-0 border-l border-t border-neutral-200">
+      <div className="grid grid-cols-7 gap-0 border-l-2 border-t-2 border-neutral-300 rounded-b-lg overflow-hidden">
         {/* Phase 4 Prompt 8: Map through grid dates and render CalendarCell for each */}
         {dates.map((date, index) => {
           // Phase 4 Prompt 8: Filter events prop to pass relevant events to each cell

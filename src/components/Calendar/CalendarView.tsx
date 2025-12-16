@@ -170,16 +170,18 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   // Get display title for header
   const getDisplayTitle = (): string => {
     if (view === 'month') {
-      return formatDate(currentDate, 'MMMM YYYY');
+      const monthName = formatDate(currentDate, 'MMMM');
+      const year = currentDate.getFullYear();
+      return `${monthName} ${year}`;
     } else {
       return `Week of ${formatDate(currentDate, 'MMM D, YYYY')}`;
     }
   };
   
   return (
-    <div className="bg-white rounded-lg shadow-card overflow-hidden">
+    <div className="bg-white rounded-xl shadow-2xl overflow-hidden border border-neutral-200">
       {/* Phase 6 Prompt 13: Header with Month/Year, Prev/Today/Next buttons, View Toggle */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 sm:p-6 border-b border-neutral-200 bg-neutral-50">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 sm:p-6 border-b-2 border-neutral-300 bg-gradient-to-r from-neutral-50 to-white">
         {/* Navigation Controls */}
         <div className="flex items-center gap-2 justify-between sm:justify-start">
           <div className="flex items-center gap-2">
@@ -263,7 +265,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
       </div>
       
       {/* Calendar Body */}
-      <div className="p-6">
+      <div className="p-4 sm:p-6 bg-white">
         {/* Show EmptyState when no events exist */}
         {events.length === 0 ? (
           <EmptyState onCreateEvent={handleFabClick} />
@@ -306,7 +308,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
       {events.length > 0 && (
         <button
           onClick={handleFabClick}
-          className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 w-12 h-12 sm:w-14 sm:h-14 bg-primary-500 hover:bg-primary-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center group z-50"
+          className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center justify-center group z-50 transform hover:scale-110 border-2 border-white"
           aria-label="Create new event"
           title="Create new event (Press N)"
         >

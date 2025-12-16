@@ -46,10 +46,10 @@ export const Button: React.FC<ButtonProps> = ({
   
   // Variant styles using design system colors
   const variantStyles = {
-    primary: 'bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700 focus:ring-primary-500',
-    secondary: 'bg-neutral-200 text-neutral-900 hover:bg-neutral-300 active:bg-neutral-300 focus:ring-neutral-700 border border-neutral-300',
+    primary: 'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 focus:ring-primary-500 shadow-md hover:shadow-lg',
+    secondary: 'bg-white text-neutral-700 hover:bg-neutral-50 active:bg-neutral-100 focus:ring-neutral-500 border-2 border-neutral-300 hover:border-neutral-400 shadow-sm',
     ghost: 'bg-transparent text-neutral-700 hover:bg-neutral-100 active:bg-neutral-200 focus:ring-neutral-500',
-    danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:ring-red-500',
+    danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:ring-red-500 shadow-md hover:shadow-lg',
   };
   
   // Size variants

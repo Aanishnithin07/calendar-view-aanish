@@ -12,14 +12,14 @@ function App() {
   const { events, addEvent, updateEvent, deleteEvent } = useEventManager();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Calendar Component Library
+    <div className="min-h-screen bg-gradient-to-br from-neutral-100 via-white to-neutral-100 py-8 px-4 sm:p-8">
+      <div className="max-w-7xl mx-auto">
+        <header className="mb-10 text-center">
+          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-800 mb-3">
+            Calendar Management System
           </h1>
-          <p className="text-gray-600">
-            Production-grade React + TypeScript Calendar with Tailwind CSS
+          <p className="text-lg text-neutral-700 font-medium">
+            Professional Event Scheduling & Management Platform
           </p>
         </header>
 
@@ -32,8 +32,13 @@ function App() {
           />
         </main>
 
-        <footer className="mt-8 text-center text-sm text-gray-500">
-          <p>Built with React 18, TypeScript (Strict Mode), Tailwind CSS, and Vite</p>
+        <footer className="mt-12 pt-8 border-t-2 border-neutral-200 text-center">
+          <p className="text-neutral-600 font-medium text-base">
+            Developed by <span className="text-primary-700 font-bold">Aanish Nithin A</span>
+          </p>
+          <p className="text-neutral-500 text-sm mt-2">
+            React 18 • TypeScript • Tailwind CSS • Vite
+          </p>
         </footer>
       </div>
     </div>

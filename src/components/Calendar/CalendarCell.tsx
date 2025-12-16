@@ -67,7 +67,7 @@ const CalendarCellComponent: React.FC<CalendarCellProps> = ({
   
   return (
     <div
-      className="min-h-[120px] border border-neutral-200 p-2 hover:bg-neutral-50 transition-colors cursor-pointer overflow-hidden"
+      className="min-h-[120px] border-r-2 border-b-2 border-neutral-300 p-3 hover:bg-primary-50 transition-all cursor-pointer overflow-hidden bg-white hover:shadow-inner"
       onClick={handleCellClick}
       role="gridcell"
       aria-label={`${date.toLocaleDateString()}, ${events.length} events`}

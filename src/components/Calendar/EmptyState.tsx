@@ -18,11 +18,12 @@ interface EmptyStateProps {
 
 export const EmptyState: React.FC<EmptyStateProps> = ({ onCreateEvent }) => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] py-12 px-4">
+    <div className="flex flex-col items-center justify-center min-h-[500px] py-16 px-4 bg-gradient-to-b from-white to-neutral-50 rounded-lg">
       {/* Calendar Icon */}
-      <div className="mb-6">
+      <div className="mb-8 relative">
+        <div className="absolute inset-0 bg-primary-100 rounded-full blur-3xl opacity-30"></div>
         <svg
-          className="w-24 h-24 text-neutral-300"
+          className="w-32 h-32 text-primary-400 relative"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -38,18 +39,19 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onCreateEvent }) => {
       </div>
 
       {/* Message */}
-      <h3 className="text-xl font-semibold text-neutral-900 mb-2">
-        No Events Yet
+      <h3 className="text-2xl font-bold text-neutral-900 mb-3">
+        No Events Scheduled
       </h3>
-      <p className="text-neutral-600 text-center max-w-sm mb-8">
-        Get started by creating your first event. Track meetings, deadlines, and important dates all in one place.
+      <p className="text-neutral-600 text-center max-w-md mb-10 text-lg">
+        Start organizing your schedule by creating your first event. Track meetings, deadlines, and important dates efficiently.
       </p>
 
       {/* CTA Button */}
       <Button
         variant="primary"
         onClick={onCreateEvent}
-        className="shadow-lg hover:shadow-xl transition-shadow"
+        size="lg"
+        className="shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
         leftIcon={
           <svg
             className="w-5 h-5"
