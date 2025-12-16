@@ -11,7 +11,7 @@
  * - Responsive layout
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import type { CalendarEvent } from '@/types/calendar.types';
 import { MonthView } from './MonthView';
 import { WeekView } from './WeekView';
@@ -112,6 +112,14 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
     }
   };
 
+  // Handle FAB click to create new event
+  const handleFabClick = useCallback((): void => {
+    setSelectedDate(new Date());
+    setSelectedEvent(undefined);
+    setModalMode('create');
+    setIsModalOpen(true);
+  }, []);
+
   // Keyboard shortcuts for better UX
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -157,15 +165,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isModalOpen, showDeleteConfirm, view, nextMonth, prevMonth, nextWeek, prevWeek, goToToday]);
-  
-  // Handle FAB click to create new event
-  const handleFabClick = (): void => {
-    setSelectedDate(new Date());
-    setSelectedEvent(undefined);
-    setModalMode('create');
-    setIsModalOpen(true);
-  };
+  }, [isModalOpen, showDeleteConfirm, view, nextMonth, prevMonth, nextWeek, prevWeek, goToToday, handleFabClick]);
   
   // Get display title for header
   const getDisplayTitle = (): string => {

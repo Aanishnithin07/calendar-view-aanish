@@ -10,7 +10,7 @@
  * - Focus trap and body scroll lock
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 export interface ModalProps {
@@ -37,14 +37,6 @@ export const Modal: React.FC<ModalProps> = ({
   className = '',
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-  
-  // Handle animation state
-  useEffect(() => {
-    if (isOpen) {
-      setIsAnimating(true);
-    }
-  }, [isOpen]);
   
   // Handle escape key
   useEffect(() => {
@@ -104,7 +96,7 @@ export const Modal: React.FC<ModalProps> = ({
   return createPortal(
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 bg-black transition-opacity duration-300 ${
-        isAnimating ? 'bg-opacity-50' : 'bg-opacity-0'
+        isOpen ? 'bg-opacity-50' : 'bg-opacity-0'
       }`}
       onClick={handleBackdropClick}
       role="dialog"
@@ -115,7 +107,7 @@ export const Modal: React.FC<ModalProps> = ({
         ref={modalRef}
         className={`bg-white sm:rounded-lg shadow-modal w-full h-full sm:h-auto ${sizeStyles[size]} ${className} 
           transition-all duration-300 transform ${
-          isAnimating 
+          isOpen 
             ? 'opacity-100 scale-100 translate-y-0' 
             : 'opacity-0 scale-95 translate-y-4'
         }`}
